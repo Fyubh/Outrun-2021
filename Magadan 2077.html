@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magadan 2077</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <script src="scripts/vector2d.js"></script>
+    <script src="scripts/Render.js"></script>
+    <script src="scripts/line.js"></script>
+    <script src="scripts/globals.js"></script>
+    
+    <canvas id="cnvs" class="container flex center" height="969px" width="1920px"></canvas>
+
+    <script>
+        var canvas=document.getElementById('cnvs');
+        var ctx = canvas.getContext('2d');   
+
+        // Создаем объект изображения
+        var img = new Image();
+
+        // Привязываем функцию к событию onload
+        // Это указывает браузеру, что делать, когда изображение загружено
+        img.onload = function() {
+            ctx.drawImage(img, 0, 0, 1920, 500);
+        };
+
+        // Загружаем файл изображения
+        img.src = 'image/bg.png';
+
+        let lines = [];
+        for(let i = 0; i < 1600; i++)
+        {
+            let line = new Line();
+            line.z = i * SEGL;
+            
+            if(i > 300 && i < 700) {line.curve = 0.5;}
+            if(i > 750) {line.y = Math.sin(i/30.0) * 1500;}
+
+
+            lines.push(line);
+        }
+        
+        /////////////////////////////
+                
+        var pos = 0;
+        var playerX = 0;
+        var z = 0;
+        setInterval(onTimerTick, 33);
+        
+        
+        function onTimerTick() {
+            var N = lines.length;
+            var maxy = HEIGHT;
+            z++;
+            document.onkeydown = checkKey;
+
+            function checkKey(e) {
+
+                e = e || window.event;
+
+                if (e.keyCode == '38') 
+                {
+                    pos += 400; 
+                    console.log('up' + pos);
+                }
+                else if (e.keyCode == '40') 
+                {
+                    pos -= 400;
+                    console.log('down' + pos);
+                }
+                else if (e.keyCode == '37' && playerX > -5000) 
+                {
+                    playerX -= 200
+                    console.log('left' + playerX);
+                }
+                else if (e.keyCode == '39' && playerX < 5000) 
+                {
+                    playerX += 200;
+                    console.log('right' + playerX);
+                }
+            }
+
+            /////////////////////////////
+
+            while (pos >= N*SEGL) { pos -= N * SEGL;}
+            while (pos < 0) {pos += N * SEGL;}
+
+            ////////////////////////////
+
+            var startPos = pos / SEGL;
+            var camH = 1500 + lines[startPos].y;
+            var x = 0, dx = 0;
+
+            for(let n = startPos; n < startPos + 300; n++)
+            {
+                lines[n % N].project(playerX - x, camH, startPos * SEGL - (n>=N?N*SEGL:0));
+                
+                x += dx;
+                dx += lines[n % N].curve;
+
+                var grass, rumble, road;
+                if((n % 3) / 2)
+                {
+                    grass = '#009A00';
+                    rumble = '#FFFFFF';
+                    road = 'gray';
+                }
+                else
+                {
+                    grass = '#10C810';
+                    rumble = '#000000';
+                    road = 'dimgray';
+                }
+                if (lines[n % N].Y >= maxy) continue;
+                maxy = lines[n % N].Y;
+                p = lines[(n-1) % N]
+                Render.DrawPolygonTest(ctx, 0, p.Y, WIDTH, 0, lines[n % N].Y, WIDTH, grass);
+                Render.DrawPolygonTest(ctx, p.X, p.Y, p.W * 1.2, lines[n % N].X, lines[n % N].Y, lines[n % N].W * 1.2, rumble);
+                Render.DrawPolygonTest(ctx, p.X, p.Y, p.W, lines[n % N].X, lines[n % N].Y, lines[n % N].W, road);
+            }
+        }
+    </script>
+</body>
+</html>

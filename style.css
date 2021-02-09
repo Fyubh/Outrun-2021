@@ -1,0 +1,16 @@
+body{
+    margin: 0px;
+}
+.flex{
+    display: flex;
+}
+.center{
+    align-items: center;
+}
+.container{
+    max-width: 1920px;
+    margin: 0 auto;
+}
+canvas{
+    background-image: 'https://i.redd.it/xti65fk0824z.png';
+}
