@@ -13,14 +13,23 @@
     <script src="scripts/line.js"></script>
     <script src="scripts/globals.js"></script>
     
-    <canvas id="cnvs" class="container flex center" height="969px" width="1920px"></canvas>
+    <canvas id="cnvs" class="container flex center"></canvas>
 
     <script>
+        alert(document.body.clientHeight + " " + document.body.clientWidth)
+        HEIGHT = document.body.clientHeight;
+        WIDTH = document.body.clientWidth;
         var canvas=document.getElementById('cnvs');
         var ctx = canvas.getContext('2d');   
 
+        canvas.setAttribute('height', HEIGHT);
+        canvas.setAttribute('width', WIDTH);
+
+
         // Создаем объект изображения
         var img = new Image();
+        var sonic = new Image();
+        var car = new Image();
 
         // Привязываем функцию к событию onload
         // Это указывает браузеру, что делать, когда изображение загружено
@@ -30,60 +39,84 @@
 
         // Загружаем файл изображения
         img.src = 'image/bg.png';
-
+        
         let lines = [];
-        for(let i = 0; i < 1600; i++)
+        for(let i = 0; i < 600; i++)
         {
             let line = new Line();
             line.z = i * SEGL;
             
-            if(i > 300 && i < 700) {line.curve = 0.5;}
-            if(i > 750) {line.y = Math.sin(i/30.0) * 1500;}
-
-
+            if(i > 50 && i < 100) {line.curve = 2;}
+            if(i > 120 && i < 170) {line.curve = -2;}
+            if(i > 190 && i < 230) {line.curve = 3;}
+            if(i > 250 && i < 300) {line.curve = 5;}
+            if(i > 300 && i < 400) {line.curve = -5;}
+            if(i > 400 && i < 450) {line.curve = 3;}
+            if(i > 500 && i < 600) {line.curve = -3;}
+            
+            
+            
+            // if(i > 750) {line.y = Math.sin(i/30.0) * 1500;} | Холмы
+            
+            
             lines.push(line);
         }
         
         /////////////////////////////
-                
+        
         var pos = 0;
         var playerX = 0;
         var z = 0;
         setInterval(onTimerTick, 33);
         
+        /////////////////////////////
+        
+        var press = false;
         
         function onTimerTick() {
             var N = lines.length;
             var maxy = HEIGHT;
             z++;
+            car.src = 'image/car.png';
             document.onkeydown = checkKey;
-
             function checkKey(e) {
-
+                press = true;
+                console.log(press);
+                
                 e = e || window.event;
-
-                if (e.keyCode == '38') 
+                
+                if (e.keyCode == '37' && playerX > -5000) 
                 {
-                    pos += 400; 
-                    console.log('up' + pos);
-                }
-                else if (e.keyCode == '40') 
-                {
-                    pos -= 400;
-                    console.log('down' + pos);
-                }
-                else if (e.keyCode == '37' && playerX > -5000) 
-                {
-                    playerX -= 200
+                    playerX -= 300
+                    sonic.src = 'image/player_left.png';
+                    
                     console.log('left' + playerX);
                 }
                 else if (e.keyCode == '39' && playerX < 5000) 
                 {
-                    playerX += 200;
+                    playerX += 300;
+                    sonic.src = 'image/player_right.png';
+                    
                     console.log('right' + playerX);
                 }
             }
-
+            
+            /////////////////////////////
+            
+            if(playerX >= 2400 || playerX <= - 2400)
+            {
+                HEALTH -= 10;
+                console.log(HEALTH);
+            }
+            
+            if(HEALTH < 0)
+            {
+                canvas.parentNode.removeChild(canvas);
+                let p = document.createElement('p');
+                p.innerText = 'Вы проиграли!\nВаш счёт - ' + SCORE;
+                document.body.appendChild(p);
+            }
+            
             /////////////////////////////
 
             while (pos >= N*SEGL) { pos -= N * SEGL;}
@@ -122,6 +155,21 @@
                 Render.DrawPolygonTest(ctx, p.X, p.Y, p.W * 1.2, lines[n % N].X, lines[n % N].Y, lines[n % N].W * 1.2, rumble);
                 Render.DrawPolygonTest(ctx, p.X, p.Y, p.W, lines[n % N].X, lines[n % N].Y, lines[n % N].W, road);
             }
+            SCORE += 10;
+            pos += SPEED;
+            
+            console.log(press);
+            
+            if(!press)
+            {
+                ctx.drawImage(car, 750, 730 + getRandomInt(4), 422, 237.6);
+            }
+            else
+            {
+                ctx.drawImage(sonic, 750, 730 + getRandomInt(4), 422, 237.6);
+            }
+            press = false;
+
         }
     </script>
 </body>
