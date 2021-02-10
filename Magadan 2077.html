@@ -16,9 +16,9 @@
     <canvas id="cnvs" class="container flex center"></canvas>
 
     <script>
-        alert(document.body.clientHeight + " " + document.body.clientWidth)
-        HEIGHT = document.body.clientHeight;
-        WIDTH = document.body.clientWidth;
+        alert(document.documentElement.clientHeight + " " + document.documentElement.clientWidth)
+        HEIGHT = document.documentElement.clientHeight;
+        WIDTH = document.documentElement.clientWidth;
         var canvas=document.getElementById('cnvs');
         var ctx = canvas.getContext('2d');   
 
