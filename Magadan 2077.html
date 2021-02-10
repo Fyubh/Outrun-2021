@@ -16,32 +16,31 @@
     <canvas id="cnvs" class="container flex center"></canvas>
 
     <script>
-        alert(document.documentElement.clientHeight + " " + document.documentElement.clientWidth)
-        HEIGHT = document.documentElement.clientHeight;
-        WIDTH = document.documentElement.clientWidth;
-        var canvas=document.getElementById('cnvs');
+        var canvas = document.getElementById('cnvs');
         var ctx = canvas.getContext('2d');   
-
-        canvas.setAttribute('height', HEIGHT);
-        canvas.setAttribute('width', WIDTH);
 
 
         // Создаем объект изображения
         var img = new Image();
-        var sonic = new Image();
+        var carSide = new Image();
         var car = new Image();
+
+        var hills = new Image();
+        var sky = new Image();
+        var trees = new Image();
 
         // Привязываем функцию к событию onload
         // Это указывает браузеру, что делать, когда изображение загружено
-        img.onload = function() {
-            ctx.drawImage(img, 0, 0, 1920, 500);
-        };
-
-        // Загружаем файл изображения
+        
+        // Загружаем файл background
         img.src = 'image/bg.png';
         
+        // hills.src = 'image/bg/hills.png';
+        // sky.src = 'image/bg/sky.png';
+        // trees.src = 'image/bg/trees.png';
+
         let lines = [];
-        for(let i = 0; i < 600; i++)
+        for(let i = 0; i < 800; i++)
         {
             let line = new Line();
             line.z = i * SEGL;
@@ -53,10 +52,7 @@
             if(i > 300 && i < 400) {line.curve = -5;}
             if(i > 400 && i < 450) {line.curve = 3;}
             if(i > 500 && i < 600) {line.curve = -3;}
-            
-            
-            
-            // if(i > 750) {line.y = Math.sin(i/30.0) * 1500;} | Холмы
+            // if(i > 650) {line.y = Math.sin(i/30.0) * 1500;} | Холмы
             
             
             lines.push(line);
@@ -74,6 +70,12 @@
         var press = false;
         
         function onTimerTick() {
+            HEIGHT = document.documentElement.clientHeight;
+            WIDTH = document.documentElement.clientWidth;
+
+            canvas.setAttribute('height', HEIGHT);
+            canvas.setAttribute('width', WIDTH);
+
             var N = lines.length;
             var maxy = HEIGHT;
             z++;
@@ -88,14 +90,14 @@
                 if (e.keyCode == '37' && playerX > -5000) 
                 {
                     playerX -= 300
-                    sonic.src = 'image/player_left.png';
+                    carSide.src = 'image/player_left.png';
                     
                     console.log('left' + playerX);
                 }
                 else if (e.keyCode == '39' && playerX < 5000) 
                 {
                     playerX += 300;
-                    sonic.src = 'image/player_right.png';
+                    carSide.src = 'image/player_right.png';
                     
                     console.log('right' + playerX);
                 }
@@ -123,18 +125,27 @@
             while (pos < 0) {pos += N * SEGL;}
 
             ////////////////////////////
-
+            
             var startPos = pos / SEGL;
             var camH = 1500 + lines[startPos].y;
             var x = 0, dx = 0;
-
+            
             for(let n = startPos; n < startPos + 300; n++)
             {
+                // Отдельный задний фон
+                // ctx.drawImage(sky, ((playerX - x) * 0.0001), 0, WIDTH, HEIGHT / 1.959);
+                // ctx.drawImage(hills, ((playerX - x) * 0.001), 0, WIDTH, HEIGHT / 1.959);
+                // ctx.drawImage(trees, ((playerX - x) * 0.01), 0, WIDTH, HEIGHT / 1.959);
+
+
                 lines[n % N].project(playerX - x, camH, startPos * SEGL - (n>=N?N*SEGL:0));
+
+                ctx.drawImage(img, (playerX - x) * 0.0001, 0, WIDTH, HEIGHT / 1.959);
+
                 
                 x += dx;
                 dx += lines[n % N].curve;
-
+                
                 var grass, rumble, road;
                 if((n % 3) / 2)
                 {
@@ -157,16 +168,16 @@
             }
             SCORE += 10;
             pos += SPEED;
-            
+             
             console.log(press);
             
             if(!press)
             {
-                ctx.drawImage(car, 750, 730 + getRandomInt(4), 422, 237.6);
+                ctx.drawImage(car, (WIDTH / 2) - ((WIDTH / 1920) * 422 / 2), HEIGHT - ((HEIGHT / 969) * 237.6) + getRandomInt(4), (WIDTH / 1920) * 422, (HEIGHT / 969) * 237.6);
             }
             else
             {
-                ctx.drawImage(sonic, 750, 730 + getRandomInt(4), 422, 237.6);
+                ctx.drawImage(carSide, (WIDTH / 2) - ((WIDTH / 1920) * 422 / 2), HEIGHT - ((HEIGHT / 969) * 237.6) + getRandomInt(4), (WIDTH / 1920) * 422, (HEIGHT / 969) * 237.6);
             }
             press = false;
 
