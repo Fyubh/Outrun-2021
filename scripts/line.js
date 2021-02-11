@@ -1,3 +1,4 @@
+// Линия
 class Line
 {
     constructor()
@@ -6,6 +7,8 @@ class Line
         this.X, this.Y = 0, this.W; // Проекция на экран
         this.scale, this.curve = 0;
     }
+    
+    // Проекция
     project(camX, camY, camZ) 
     {
         this.scale = CAMD / (this.z-camZ);

@@ -1,4 +1,7 @@
+// Отрисовка
 var Render = {
+
+    // Линия
     DrawLine: function(ctx, x, y, color)
     {
         ctx.beginPath();
@@ -6,6 +9,8 @@ var Render = {
         ctx.lineTo(x, y);
         ctx.stroke();
     },
+
+    // Линия с позиции
     DrawLine: function(ctx, lineTox, lineToy, moveX, moveY, color)
     {
         ctx.beginPath();
@@ -13,6 +18,8 @@ var Render = {
         ctx.lineTo(lineToX, lineToY);
         ctx.stroke();
     },
+    
+    // Полигон
     DrawPolygon: function(ctx, vector1, vector2, vector3, vector4, color)
     {
         ctx.fillStyle = color;
@@ -24,6 +31,8 @@ var Render = {
         ctx.closePath();
         ctx.fill();
     },
+
+    // Полигон
     DrawPolygonTest: function(ctx, x1, y1, w1, x2, y2, w2, color)
     {
         ctx.fillStyle = color;
@@ -35,6 +44,8 @@ var Render = {
         ctx.closePath();
         ctx.fill();
     },
+    
+    // Квадрат
     DrawBox: function(ctx, i)
     {
         Render.DrawPolygon(ctx, 400 + i, 400 + i, 400 + i, 800 + i, 800 + i, 800 + i, 800 + i, 400 + i, 'black')
