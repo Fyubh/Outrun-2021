@@ -6,16 +6,13 @@ body{
     margin: 0px;
 }
 a{
-    color: black;
-    font-family: arcade;
-
-    font-size: 40px;
-}
-a:hover{
     color: red;
     font-family: arcade;
 
-    font-size: 40px;
+    font-size: 400%;
+}
+a:hover{
+    color: black;
 }
 div{
     text-align: center;
