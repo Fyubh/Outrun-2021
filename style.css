@@ -5,6 +5,22 @@
 body{
     margin: 0px;
 }
+a{
+    color: black;
+    font-family: arcade;
+
+    font-size: 40px;
+}
+a:hover{
+    color: red;
+    font-family: arcade;
+
+    font-size: 40px;
+}
+div{
+    text-align: center;
+}
+
 .flex{
     display: flex;
 }
